@@ -102,22 +102,6 @@ ggplot(pca_after_batch_correction_person_dataframe, aes(x=V1, y=V2, col=metadata
 
 
 ######batch____correction____my____addition###___correction for time___#########
-library(sva)
-combat_edata2 = ComBat(dat=callmatrix, batch=metadata$batch2, mod=NULL, par.prior=TRUE, prior.plots=FALSE)
-head(combat_edata2)
-combat_edata2
-class(combat_edata2)
-pca_after_batch_correction_time <- prcomp(t(combat_edata2), scale = TRUE)
-summary(pca_after_batch_correction_time)
-#plot(pca_after_batch_correction_time$x[,1], pca_after_batch_correction_time$x[,2])
-#text(pca_after_batch_correction_time$x[,1], pca_after_batch_correction_time$x[,2], labels=row.names(pca_after_batch_correction_time$x), pos=c(1,3,4,2), font=2)
-pca_after_batch_correction_time_dataframe<-cbind(pca_after_batch_correction_time$x[,1], pca_after_batch_correction_time$x[,2])
-class(pca_after_batch_correction_time_dataframe)
-pca_after_batch_correction_time_dataframe<-as.data.frame(pca_after_batch_correction_time_dataframe)
-ggplot(pca_after_batch_correction_time_dataframe, aes(x=V1, y=V2,col=metadata$Group, label=rownames(pca_after_batch_correction_time_dataframe)))+geom_point()+geom_text_repel()+xlab("PC1")+ylab("PC2")
-
-################################################################################
-
 
 #####################____differential__expression__analysis_____################
 library(limma)
