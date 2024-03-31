@@ -213,10 +213,20 @@ df_merged
 #####Plot#########
 ggplot(data = df_merged) + geom_point(aes(x =  precision, y = term_name, color =precision , size = -log10(p_value), shape = as.factor(source))) + labs(y = "", x = " GeneRatio") +scale_color_gradient(low = c("red"), high = c("blue"), space = "Lab")+ theme_bw() + theme(panel.background = element_rect(fill="white"), text = element_text(size = 12,face = "plain",color = "black")) + theme(legend.text = element_text(colour = "black")) + theme(axis.text = element_text(colour = "black", face = "bold")) + theme(axis.title.x = element_text(face = "bold", size = 12)) + theme(axis.title.y = element_text(face = "bold", size = 12))
 
+
+
+
+
+
+
+
+
 ##############______WGCNA___#####################
 library(tidyverse)     # tidyverse will pull in ggplot2, readr, other useful libraries
 library(magrittr)      # provides the %>% operator
 library(WGCNA)    
+#Setting string not as factor
+options(stringsAsFactors = FALSE)
 
 expr_normalized <- combat_edata1
 input_mat = t(expr_normalized)
