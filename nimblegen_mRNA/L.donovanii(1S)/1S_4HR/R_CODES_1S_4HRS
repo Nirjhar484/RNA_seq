@@ -143,17 +143,17 @@ x
 ###################################################################################################
 ###################################################################################################
 
-write.csv(x, " FV1_RESULTS_mrna.csv", sep=",")
+write.csv(x, " 1S_4HRS_RESULTS_mrna.csv", sep=",")
 library(EnhancedVolcano)
 EnhancedVolcano(x, lab = rownames(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-1.5, 1.5), ylim = c(0, 8), pointSize = 1,title = ' FV1 vs UI', col=c("#000000", "#F0E442", "#0072B2", "#D55E00"))
 
 #########____filer__up__and___downregultated_genes__#####
 x_up <- x[x$adj.P.Val<0.05 & x$logFC>=1.5,]
 dim(x_up)
-write.csv(x_up, "UPREGULATED_ FV1_RESULTS_mrna.csv", sep=",")
+write.csv(x_up, "UPREGULATED_1S_4HRS_RESULTS_mrna.csv", sep=",")
 x_down <- x[x$adj.P.Val<0.05 & x$logFC<=-1.5,]
 dim(x_down)
-write.csv(x_down, "DOWNREGULATED_ FV1_RESULTS_mrna.csv", sep=",")
+write.csv(x_down, "DOWNREGULATED_1S_4HRS_RESULTS_mrna.csv", sep=",")
 #########____some__modifications__on___volcao__plot___##########################
 keyvals <- ifelse(
   x$logFC < -1.5 & x$adj.P.Val<0.05, 'royalblue',
