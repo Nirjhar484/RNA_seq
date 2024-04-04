@@ -106,6 +106,36 @@ metadata$both <- paste0(metadata$Group, "_", metadata$Day)
 metadata
 colnames(MT_genes) <- metadata$both[match(colnames(MT_genes),row.names(metadata))]
 MT_genes
+
+
+################___MT1F___#####################
+MT1F<-as.data.frame(combat_edata1[c("MT1F"),])
+MT1F<-merge(MT1F, metadata, by=0, all.x=TRUE)
+MT1F
+colnames(MT1F)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1F
+MT1F<-MT1F[,c("Expression","both")]
+MT1F
+MT1F<- MT1F %>% relocate("Expression", .after = "both")
+MT1F
+bp <- ggboxplot(MT1F, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1F gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1F %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+################___MT1A___#####################
 ##############################################
 MT1A<-as.data.frame(combat_edata1[c("MT1A"),])
 MT1A<-merge(MT1A, metadata, by=0, all.x=TRUE)
