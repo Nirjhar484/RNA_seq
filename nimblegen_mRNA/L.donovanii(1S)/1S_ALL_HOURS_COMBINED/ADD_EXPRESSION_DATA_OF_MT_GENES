@@ -1,0 +1,336 @@
+################################################
+MT_genes<- combat_edata1[c("MT1A", "MT1E", "MT1F","MT1G","MT1H","MT1HL1","MT1JP","MT1L","MT1M","MT1P3","MT1X","MT2A"),]
+MT_genes
+metadata$both <- paste0(metadata$Group, "_", metadata$Day)
+metadata
+colnames(MT_genes) <- metadata$both[match(colnames(MT_genes),row.names(metadata))]
+MT_genes
+##############################################
+MT1A<-as.data.frame(combat_edata1[c("MT1A"),])
+MT1A<-merge(MT1A, metadata, by=0, all.x=TRUE)
+MT1A
+colnames(MT1A)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1A
+MT1A<-MT1A[,c("Expression","both")]
+MT1A
+MT1A<- MT1A %>% relocate("Expression", .after = "both")
+MT1A
+bp <- ggboxplot(MT1A, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1A gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1A %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+###############################################
+################___MT1E___#####################
+MT1E<-as.data.frame(combat_edata1[c("MT1E"),])
+MT1E<-merge(MT1E, metadata, by=0, all.x=TRUE)
+MT1E
+colnames(MT1E)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1E
+MT1E<-MT1E[,c("Expression","both")]
+MT1E
+MT1E<- MT1E %>% relocate("Expression", .after = "both")
+MT1E
+bp <- ggboxplot(MT1E, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1E gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1E %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+
+################___MT1F___#####################
+MT1F<-as.data.frame(combat_edata1[c("MT1F"),])
+MT1F<-merge(MT1F, metadata, by=0, all.x=TRUE)
+MT1F
+colnames(MT1F)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1F
+MT1F<-MT1F[,c("Expression","both")]
+MT1F
+MT1F<- MT1F %>% relocate("Expression", .after = "both")
+MT1F
+bp <- ggboxplot(MT1F, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1F gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1F %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+################___MT1G___#####################
+MT1G<-as.data.frame(combat_edata1[c("MT1G"),])
+MT1G<-merge(MT1G, metadata, by=0, all.x=TRUE)
+MT1G
+colnames(MT1G)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1G
+MT1G<-MT1G[,c("Expression","both")]
+MT1G
+MT1G<- MT1G %>% relocate("Expression", .after = "both")
+MT1G
+bp <- ggboxplot(MT1G, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1G gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1G %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+
+################___MT1H___#####################
+MT1H<-as.data.frame(combat_edata1[c("MT1H"),])
+MT1H<-merge(MT1H, metadata, by=0, all.x=TRUE)
+MT1H
+colnames(MT1H)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1H
+MT1H<-MT1H[,c("Expression","both")]
+MT1H
+MT1H<- MT1H %>% relocate("Expression", .after = "both")
+MT1H
+bp <- ggboxplot(MT1H, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1H gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1H %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+
+
+################___MT1HL1___#####################
+MT1HL1<-as.data.frame(combat_edata1[c("MT1HL1"),])
+MT1HL1<-merge(MT1HL1, metadata, by=0, all.x=TRUE)
+MT1HL1
+colnames(MT1HL1)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1HL1
+MT1HL1<-MT1HL1[,c("Expression","both")]
+MT1HL1
+MT1HL1<- MT1HL1 %>% relocate("Expression", .after = "both")
+MT1HL1
+bp <- ggboxplot(MT1HL1, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1HL1 gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1HL1 %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+################___MT1JP___#####################
+MT1JP<-as.data.frame(combat_edata1[c("MT1JP"),])
+MT1JP<-merge(MT1JP, metadata, by=0, all.x=TRUE)
+MT1JP
+colnames(MT1JP)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1JP
+MT1JP<-MT1JP[,c("Expression","both")]
+MT1JP
+MT1JP<- MT1JP %>% relocate("Expression", .after = "both")
+MT1JP
+bp <- ggboxplot(MT1JP, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1JP gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1JP %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+################___MT1L___#####################
+MT1L<-as.data.frame(combat_edata1[c("MT1L"),])
+MT1L<-merge(MT1L, metadata, by=0, all.x=TRUE)
+MT1L
+colnames(MT1L)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1L
+MT1L<-MT1L[,c("Expression","both")]
+MT1L
+MT1L<- MT1L %>% relocate("Expression", .after = "both")
+MT1L
+bp <- ggboxplot(MT1L, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1L gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1L %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+################___MT1M___#####################
+MT1M<-as.data.frame(combat_edata1[c("MT1M"),])
+MT1M<-merge(MT1M, metadata, by=0, all.x=TRUE)
+MT1M
+colnames(MT1M)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1M
+MT1M<-MT1M[,c("Expression","both")]
+MT1M
+MT1M<- MT1M %>% relocate("Expression", .after = "both")
+MT1M
+bp <- ggboxplot(MT1M, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1M gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1M %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+################___MT1P3___#####################
+MT1P3<-as.data.frame(combat_edata1[c("MT1P3"),])
+MT1P3<-merge(MT1P3, metadata, by=0, all.x=TRUE)
+MT1P3
+colnames(MT1P3)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1P3
+MT1P3<-MT1P3[,c("Expression","both")]
+MT1P3
+MT1P3<- MT1P3 %>% relocate("Expression", .after = "both")
+MT1P3
+bp <- ggboxplot(MT1P3, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1P3 gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1P3 %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+################___MT1X___#####################
+MT1X<-as.data.frame(combat_edata1[c("MT1X"),])
+MT1X<-merge(MT1X, metadata, by=0, all.x=TRUE)
+MT1X
+colnames(MT1X)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT1X
+MT1X<-MT1X[,c("Expression","both")]
+MT1X
+MT1X<- MT1X %>% relocate("Expression", .after = "both")
+MT1X
+bp <- ggboxplot(MT1X, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT1X gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT1X %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+################___MT2A___#####################
+MT2A<-as.data.frame(combat_edata1[c("MT2A"),])
+MT2A<-merge(MT2A, metadata, by=0, all.x=TRUE)
+MT2A
+colnames(MT2A)<-c("Sample", "Expression", "Day", "Group", "batch","batch2", "both")
+MT2A
+MT2A<-MT2A[,c("Expression","both")]
+MT2A
+MT2A<- MT2A %>% relocate("Expression", .after = "both")
+MT2A
+bp <- ggboxplot(MT2A, x = "both", y = "Expression", fill = "both") + theme_gray(base_size = 14)+ ggtitle("Expression of MT2A gene")+geom_jitter()
+bp
+#install.packages("rstatix")
+library(rstatix)
+#install.packages("ggpubr")
+library(ggpubr)
+
+stat.test <- MT2A %>%
+  pairwise_t_test(
+    Expression ~ both, paired = TRUE,
+    p.adjust.method = "bonferroni"
+  )
+stat.test
+stat.test <- stat.test %>% add_xy_position(x = "both")
+bp + stat_pvalue_manual(stat.test, label = "{p.adj}{p.adj.signif}", hide.ns = T)
+
+
+
+
