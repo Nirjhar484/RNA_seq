@@ -23,8 +23,9 @@ colnames(callmatrix) <- rownames(metadata)
 
 
 ######################___box__plot___##################
-boxplot(callmatrix)
 
+#boxplot(callmatrix)
+ggplot(stack(as.data.frame(callmatrix)), aes(x = ind, y = values)) +   geom_boxplot()
 
 
 ##########___log2___and___quantile___normalisation___###########################
@@ -32,12 +33,14 @@ library(preprocessCore)
 
 #Log2
 callmatrix <- log2(callmatrix)
-boxplot(callmatrix)
+#boxplot(callmatrix)
+ggplot(stack(as.data.frame(callmatrix)), aes(x = ind, y = values)) +   geom_boxplot()
 
 #Qnorm
 callmatrix <- normalize.quantiles(callmatrix)
 rownames(callmatrix) <- rnames; colnames(callmatrix) <- rownames(metadata)
-boxplot(callmatrix)
+#boxplot(callmatrix)
+ggplot(stack(as.data.frame(callmatrix)), aes(x = ind, y = values)) +   geom_boxplot()
 
 #########################################
 x<-callmatrix
@@ -65,6 +68,7 @@ rownames(x)<-x$Group.1
 x<-x[,-1]
 head(x)
 dim(x)
+str(x)
 x<-x[,-11]
 callmatrix<-x
 
@@ -103,22 +107,6 @@ ggplot(pca_after_batch_correction_person_dataframe, aes(x=V1, y=V2, col=metadata
 
 
 ######batch____correction____my____addition###___correction for time___#########
-library(sva)
-combat_edata2 = ComBat(dat=callmatrix, batch=metadata$batch2, mod=NULL, par.prior=TRUE, prior.plots=FALSE)
-head(combat_edata2)
-combat_edata2
-class(combat_edata2)
-pca_after_batch_correction_time <- prcomp(t(combat_edata2), scale = TRUE)
-summary(pca_after_batch_correction_time)
-#plot(pca_after_batch_correction_time$x[,1], pca_after_batch_correction_time$x[,2])
-#text(pca_after_batch_correction_time$x[,1], pca_after_batch_correction_time$x[,2], labels=row.names(pca_after_batch_correction_time$x), pos=c(1,3,4,2), font=2)
-pca_after_batch_correction_time_dataframe<-cbind(pca_after_batch_correction_time$x[,1], pca_after_batch_correction_time$x[,2])
-class(pca_after_batch_correction_time_dataframe)
-pca_after_batch_correction_time_dataframe<-as.data.frame(pca_after_batch_correction_time_dataframe)
-ggplot(pca_after_batch_correction_time_dataframe, aes(x=V1, y=V2,col=metadata$Group, label=rownames(pca_after_batch_correction_time_dataframe)))+geom_point()+geom_text_repel()+xlab("PC1")+ylab("PC2")
-
-################################################################################
-
 
 #####################____differential__expression__analysis_____################
 library(limma)
@@ -155,17 +143,17 @@ x
 ###################################################################################################
 ###################################################################################################
 
-write.csv(x, " FV1_RESULTS_mrna.csv", sep=",")
+write.csv(x, "1S_UI_24HR_UP_AND_DOWN_RESULTS_mrna.csv", sep=",")
 library(EnhancedVolcano)
-EnhancedVolcano(x, lab = rownames(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-1.5, 1.5), ylim = c(0, 8), pointSize = 1,title = ' FV1 vs UI', col=c("#000000", "#F0E442", "#0072B2", "#D55E00"))
+#EnhancedVolcano(x, lab = rownames(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-1.5, 1.5), ylim = c(0, 8), pointSize = 1,title = ' FV1 vs UI', col=c("#000000", "#F0E442", "#0072B2", "#D55E00"))
 
 #########____filer__up__and___downregultated_genes__#####
 x_up <- x[x$adj.P.Val<0.05 & x$logFC>=1.5,]
 dim(x_up)
-write.csv(x_up, "UPREGULATED_ FV1_RESULTS_mrna.csv", sep=",")
+write.csv(x_up, "1S_UI_24H_UPREGULATED_RESULTS_mrna.csv", sep=",")
 x_down <- x[x$adj.P.Val<0.05 & x$logFC<=-1.5,]
 dim(x_down)
-write.csv(x_down, "DOWNREGULATED_ FV1_RESULTS_mrna.csv", sep=",")
+write.csv(x_down, "1S_UI_24H_DOWNREGULATED_RESULTS_mrna.csv", sep=",")
 #########____some__modifications__on___volcao__plot___##########################
 keyvals <- ifelse(
   x$logFC < -1.5 & x$adj.P.Val<0.05, 'royalblue',
@@ -177,7 +165,7 @@ names(keyvals)[keyvals == 'black'] <- 'Adjusted P values less than 0.05'
 names(keyvals)[keyvals == 'red'] <- 'Nonsignificant'
 names(keyvals)[keyvals == 'gold'] <- 'Upregulated'
 
-EnhancedVolcano(x, lab = row.names(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-3.5, 3.5), ylim = c(0, 12), pointSize = 3,title = ' 24HR 1S vs UI', colCustom = keyvals)
+EnhancedVolcano(x, lab = row.names(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-3.5, 3.5), ylim = c(0, 12), pointSize = 3,title = ' 8HR 1S vs UI', colCustom = keyvals)
 
 
 ################################################################################
@@ -187,125 +175,88 @@ EnhancedVolcano(x, lab = row.names(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 
 library("gprofiler2")
 library(tidyr)
 library(dplyr)
-gostres <- gost(query = row.names(x_up), 
-                organism = "hsapiens", ordered_query = FALSE, 
-                multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, 
-                measure_underrepresentation = FALSE, evcodes = TRUE, 
-                user_threshold = 0.05, correction_method = "fdr", 
-                domain_scope = "annotated", custom_bg = NULL, 
-                numeric_ns = "", sources = NULL, as_short_link = FALSE)
+gostres_UP <- gost(query = row.names(x_up), 
+                   organism = "hsapiens", ordered_query = FALSE, 
+                   multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, 
+                   measure_underrepresentation = FALSE, evcodes = TRUE, 
+                   user_threshold = 0.05, correction_method = "fdr", 
+                   domain_scope = "annotated", custom_bg = NULL, 
+                   numeric_ns = "", sources = NULL, as_short_link = FALSE)
 
 
-gem <- gostres$result[,c("term_name", "p_value", "term_id", "source","precision", "intersection")]
-write.csv(gem, "gem.csv", sep=",")
+onto_UP <- gostres_UP$result[,c("term_name", "p_value", "term_id", "source","precision", "intersection")]
+write.csv(onto_UP, "1S_UI_24HR_ONTOLOGY_UPREGULATED.csv", sep=",")
 #create separate datasets for BP,CC,MF and KEGG
 ##BP
-BP<-gem[gem$source=="GO:BP",]
-BP<-top_n(as.data.frame(BP),-10,p_value)
-head(BP)
+BP_UP<-onto_UP[onto_UP$source=="GO:BP",]
+BP_UP<-top_n(as.data.frame(BP_UP),-10,p_value)
+head(BP_UP)
 ##cc
-CC<-gem[gem$source=="GO:CC",]
-CC<-top_n(as.data.frame(CC),-10,p_value)
-head(CC)
+CC_UP<-onto_UP[onto_UP$source=="GO:CC",]
+CC_UP<-top_n(as.data.frame(CC_UP),-10,p_value)
+head(CC_UP)
 ##MF
-MF<-gem[gem$source=="GO:MF",]
-MF<-top_n(as.data.frame(MF),-10,p_value)
-head(MF)
+MF_UP<-onto_UP[onto_UP$source=="GO:MF",]
+MF_UP<-top_n(as.data.frame(MF_UP),-10,p_value)
+head(MF_UP)
 ####__KEGG___##
-KEGG<-gem[gem$source=="KEGG",]
-KEGG<-top_n(as.data.frame(KEGG),-10,p_value)
-head(KEGG)
+KEGG_UP<-onto_UP[onto_UP$source=="KEGG",]
+KEGG_UP<-top_n(as.data.frame(KEGG_UP),-10,p_value)
+head(KEGG_UP)
 #####MERGE THEM####
-df_merge_BP_CC<-merge(BP,CC,by=c("term_name", "p_value", "term_id", "source","precision", "intersection"), all.x=T, all.y=T)
-df_merge_MF_KEGG<-merge(MF,KEGG,by=c("source", "term_name", "p_value", "term_id", "precision", "intersection"), all.x=T, all.y=T)
-df_merged<-merge(df_merge_BP_CC, df_merge_MF_KEGG, by=c("source", "term_name", "p_value", "term_id", "precision","intersection"), all.x=T, all.y=T)
-df_merged$precision<-(df_merged$precision)*5
-df_merged
+df_merge_BP_CC_UP<-merge(BP_UP,CC_UP,by=c("term_name", "p_value", "term_id", "source","precision", "intersection"), all.x=T, all.y=T)
+df_merge_MF_KEGG_UP<-merge(MF_UP,KEGG_UP,by=c("source", "term_name", "p_value", "term_id", "precision", "intersection"), all.x=T, all.y=T)
+df_merged_UP<-merge(df_merge_BP_CC_UP, df_merge_MF_KEGG_UP, by=c("source", "term_name", "p_value", "term_id", "precision","intersection"), all.x=T, all.y=T)
+df_merged_UP$precision<-(df_merged_UP$precision)*5
+df_merged_UP
 
 #####Plot#########
-ggplot(data = df_merged) + geom_point(aes(x =  precision, y = term_name, color =precision , size = -log10(p_value), shape = as.factor(source))) + labs(y = "", x = " GeneRatio") +scale_color_gradient(low = c("red"), high = c("blue"), space = "Lab")+ theme_bw() + theme(panel.background = element_rect(fill="white"), text = element_text(size = 12,face = "plain",color = "black")) + theme(legend.text = element_text(colour = "black")) + theme(axis.text = element_text(colour = "black", face = "bold")) + theme(axis.title.x = element_text(face = "bold", size = 12)) + theme(axis.title.y = element_text(face = "bold", size = 12))
+ggplot(data = df_merged_UP) + geom_point(aes(x =  precision, y = term_name, color =precision , size = -log10(p_value), shape = as.factor(source))) + labs(y = "", x = " GeneRatio") +scale_color_gradient(low = c("red"), high = c("blue"), space = "Lab")+ theme_bw() + theme(panel.background = element_rect(fill="white"), text = element_text(size = 12,face = "plain",color = "black")) + theme(legend.text = element_text(colour = "black")) + theme(axis.text = element_text(colour = "black", face = "bold")) + theme(axis.title.x = element_text(face = "bold", size = 12)) + theme(axis.title.y = element_text(face = "bold", size = 12))
 
-##############______WGCNA___#####################
-library(tidyverse)     # tidyverse will pull in ggplot2, readr, other useful libraries
-library(magrittr)      # provides the %>% operator
-library(WGCNA)    
-
-expr_normalized <- combat_edata1
-input_mat = t(expr_normalized)
-input_mat[1:5,1:10]
-allowWGCNAThreads()
-powers = c(c(1:10), seq(from = 12, to = 20, by = 2))
-sft = pickSoftThreshold(
-  input_mat,             # <= Input data
-  #blockSize = 30,
-  powerVector = powers,
-  verbose = 5
-)
-par(mfrow = c(1,2));
-cex1 = 0.9;
-
-plot(sft$fitIndices[, 1],
-     -sign(sft$fitIndices[, 3]) * sft$fitIndices[, 2],
-     xlab = "Soft Threshold (power)",
-     ylab = "Scale Free Topology Model Fit, signed R^2",
-     main = paste("Scale independence")
-)
-text(sft$fitIndices[, 1],
-     -sign(sft$fitIndices[, 3]) * sft$fitIndices[, 2],
-     labels = powers, cex = cex1, col = "red"
-)
-abline(h = 0.90, col = "red")
-plot(sft$fitIndices[, 1],
-     sft$fitIndices[, 5],
-     xlab = "Soft Threshold (power)",
-     ylab = "Mean Connectivity",
-     type = "n",
-     main = paste("Mean connectivity")
-)
-text(sft$fitIndices[, 1],
-     sft$fitIndices[, 5],
-     labels = powers,
-     cex = cex1, col = "red")
-
-##############3#####
-picked_power = 9
-temp_cor <- cor       
-cor <- WGCNA::cor         # Force it to use WGCNA cor function (fix a namespace conflict issue)
-netwk <- blockwiseModules(input_mat,                # <= input here
-                          
-                          # == Adjacency Function ==
-                          power = picked_power,                # <= power here
-                          networkType = "signed",
-                          
-                          # == Tree and Block Options ==
-                          deepSplit = 2,
-                          pamRespectsDendro = F,
-                          # detectCutHeight = 0.75,
-                          minModuleSize = 30,
-                          maxBlockSize = 4000,
-                          
-                          # == Module Adjustments ==
-                          reassignThreshold = 0,
-                          mergeCutHeight = 0.25,
-                          
-                          # == TOM == Archive the run results in TOM file (saves time)
-                          saveTOMs = T,
-                          saveTOMFileBase = "ER",
-                          
-                          # == Output Options
-                          numericLabels = T,
-                          verbose = 3)
+##############################################################################################
 
 
+########___ONTOLOGY___##########
+##for downregulated genes
+library("gprofiler2")
+library(tidyr)
+library(dplyr)
+gostres_DOWN <- gost(query = row.names(x_down), 
+                     organism = "hsapiens", ordered_query = FALSE, 
+                     multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, 
+                     measure_underrepresentation = FALSE, evcodes = TRUE, 
+                     user_threshold = 0.05, correction_method = "fdr", 
+                     domain_scope = "annotated", custom_bg = NULL, 
+                     numeric_ns = "", sources = NULL, as_short_link = FALSE)
 
 
+onto_DOWN <- gostres_DOWN$result[,c("term_name", "p_value", "term_id", "source","precision", "intersection")]
+write.csv(onto_DOWN, "1S_UI_24HR_ONTOLOGY_DOWNREGULATED.csv", sep=",")
+#create separate datasets for BP,CC,MF and KEGG
+##BP
+BP_DOWN<-onto_DOWN[onto_DOWN$source=="GO:BP",]
+BP_DOWN<-top_n(as.data.frame(BP_DOWN),-10,p_value)
+head(BP_DOWN)
+##cc
+CC_DOWN<-onto_DOWN[onto_DOWN$source=="GO:CC",]
+CC_DOWN<-top_n(as.data.frame(CC_DOWN),-10,p_value)
+head(CC_DOWN)
+##MF
+MF_DOWN<-onto_DOWN[onto_DOWN$source=="GO:MF",]
+MF_DOWN<-top_n(as.data.frame(MF_DOWN),-10,p_value)
+head(MF_DOWN)
+####__KEGG___##
+KEGG_DOWN<-onto_DOWN[onto_DOWN$source=="KEGG",]
+KEGG_DOWN<-top_n(as.data.frame(KEGG_DOWN),-10,p_value)
+head(KEGG_DOWN)
+#####MERGE THEM####
+df_merge_BP_CC_DOWN<-merge(BP_DOWN,CC_DOWN,by=c("term_name", "p_value", "term_id", "source","precision", "intersection"), all.x=T, all.y=T)
+df_merge_MF_KEGG_DOWN<-merge(MF_DOWN,KEGG_DOWN,by=c("source", "term_name", "p_value", "term_id", "precision", "intersection"), all.x=T, all.y=T)
+df_merged_DOWN<-merge(df_merge_BP_CC_DOWN, df_merge_MF_KEGG_DOWN, by=c("source", "term_name", "p_value", "term_id", "precision","intersection"), all.x=T, all.y=T)
+df_merged_DOWN$precision<-(df_merged_DOWN$precision)*5
+df_merged_DOWN
 
-
-
-
-
-
-
-
+#####Plot#########
+ggplot(data = df_merged_DOWN) + geom_point(aes(x =  precision, y = term_name, color =precision , size = -log10(p_value), shape = as.factor(source))) + labs(y = "", x = " GeneRatio") +scale_color_gradient(low = c("red"), high = c("blue"), space = "Lab")+ theme_bw() + theme(panel.background = element_rect(fill="white"), text = element_text(size = 12,face = "plain",color = "black")) + theme(legend.text = element_text(colour = "black")) + theme(axis.text = element_text(colour = "black", face = "bold")) + theme(axis.title.x = element_text(face = "bold", size = 12)) + theme(axis.title.y = element_text(face = "bold", size = 12))
 
 
