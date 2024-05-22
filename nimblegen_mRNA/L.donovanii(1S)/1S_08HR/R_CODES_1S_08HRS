@@ -138,7 +138,7 @@ x
 ###################################################################################################
 ###################################################################################################
 
-write.csv(x, " 1S_UI_8HR_UP_AND_DOWN_RESULTS_mrna.csv", sep=",")
+write.csv(x, "1S_UI_8HR_UP_AND_DOWN_RESULTS_mrna.csv", sep=",")
 library(EnhancedVolcano)
 EnhancedVolcano(x, lab = rownames(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-1.5, 1.5), ylim = c(0, 8), pointSize = 1,title = ' FV1 vs UI', col=c("#000000", "#F0E442", "#0072B2", "#D55E00"))
 
