@@ -23,8 +23,9 @@ colnames(callmatrix) <- rownames(metadata)
 
 
 ######################___box__plot___##################
-boxplot(callmatrix)
 
+#boxplot(callmatrix)
+ggplot(stack(as.data.frame(callmatrix)), aes(x = ind, y = values)) +   geom_boxplot()
 
 
 ##########___log2___and___quantile___normalisation___###########################
@@ -32,12 +33,14 @@ library(preprocessCore)
 
 #Log2
 callmatrix <- log2(callmatrix)
-boxplot(callmatrix)
+#boxplot(callmatrix)
+ggplot(stack(as.data.frame(callmatrix)), aes(x = ind, y = values)) +   geom_boxplot()
 
 #Qnorm
 callmatrix <- normalize.quantiles(callmatrix)
 rownames(callmatrix) <- rnames; colnames(callmatrix) <- rownames(metadata)
-boxplot(callmatrix)
+#boxplot(callmatrix)
+ggplot(stack(as.data.frame(callmatrix)), aes(x = ind, y = values)) +   geom_boxplot()
 
 #########################################
 x<-callmatrix
@@ -65,6 +68,8 @@ rownames(x)<-x$Group.1
 x<-x[,-1]
 head(x)
 dim(x)
+str(x)
+x<-x[,-11]
 callmatrix<-x
 
 #########################################
@@ -140,7 +145,7 @@ x
 
 write.csv(x, "1S_UI_8HR_UP_AND_DOWN_RESULTS_mrna.csv", sep=",")
 library(EnhancedVolcano)
-EnhancedVolcano(x, lab = rownames(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-1.5, 1.5), ylim = c(0, 8), pointSize = 1,title = ' FV1 vs UI', col=c("#000000", "#F0E442", "#0072B2", "#D55E00"))
+#EnhancedVolcano(x, lab = rownames(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-1.5, 1.5), ylim = c(0, 8), pointSize = 1,title = ' FV1 vs UI', col=c("#000000", "#F0E442", "#0072B2", "#D55E00"))
 
 #########____filer__up__and___downregultated_genes__#####
 x_up <- x[x$adj.P.Val<0.05 & x$logFC>=1.5,]
@@ -171,12 +176,12 @@ library("gprofiler2")
 library(tidyr)
 library(dplyr)
 gostres_UP <- gost(query = row.names(x_up), 
-                organism = "hsapiens", ordered_query = FALSE, 
-                multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, 
-                measure_underrepresentation = FALSE, evcodes = TRUE, 
-                user_threshold = 0.05, correction_method = "fdr", 
-                domain_scope = "annotated", custom_bg = NULL, 
-                numeric_ns = "", sources = NULL, as_short_link = FALSE)
+                   organism = "hsapiens", ordered_query = FALSE, 
+                   multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, 
+                   measure_underrepresentation = FALSE, evcodes = TRUE, 
+                   user_threshold = 0.05, correction_method = "fdr", 
+                   domain_scope = "annotated", custom_bg = NULL, 
+                   numeric_ns = "", sources = NULL, as_short_link = FALSE)
 
 
 onto_UP <- gostres_UP$result[,c("term_name", "p_value", "term_id", "source","precision", "intersection")]
@@ -217,12 +222,12 @@ library("gprofiler2")
 library(tidyr)
 library(dplyr)
 gostres_DOWN <- gost(query = row.names(x_down), 
-                organism = "hsapiens", ordered_query = FALSE, 
-                multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, 
-                measure_underrepresentation = FALSE, evcodes = TRUE, 
-                user_threshold = 0.05, correction_method = "fdr", 
-                domain_scope = "annotated", custom_bg = NULL, 
-                numeric_ns = "", sources = NULL, as_short_link = FALSE)
+                     organism = "hsapiens", ordered_query = FALSE, 
+                     multi_query = FALSE, significant = TRUE, exclude_iea = FALSE, 
+                     measure_underrepresentation = FALSE, evcodes = TRUE, 
+                     user_threshold = 0.05, correction_method = "fdr", 
+                     domain_scope = "annotated", custom_bg = NULL, 
+                     numeric_ns = "", sources = NULL, as_short_link = FALSE)
 
 
 onto_DOWN <- gostres_DOWN$result[,c("term_name", "p_value", "term_id", "source","precision", "intersection")]
@@ -253,4 +258,3 @@ df_merged_DOWN
 
 #####Plot#########
 ggplot(data = df_merged_DOWN) + geom_point(aes(x =  precision, y = term_name, color =precision , size = -log10(p_value), shape = as.factor(source))) + labs(y = "", x = " GeneRatio") +scale_color_gradient(low = c("red"), high = c("blue"), space = "Lab")+ theme_bw() + theme(panel.background = element_rect(fill="white"), text = element_text(size = 12,face = "plain",color = "black")) + theme(legend.text = element_text(colour = "black")) + theme(axis.text = element_text(colour = "black", face = "bold")) + theme(axis.title.x = element_text(face = "bold", size = 12)) + theme(axis.title.y = element_text(face = "bold", size = 12))
-
