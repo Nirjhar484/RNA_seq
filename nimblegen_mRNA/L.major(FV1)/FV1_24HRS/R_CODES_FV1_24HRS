@@ -1,10 +1,10 @@
 rm(list=ls())
 
 #######__set___the___working___directory___#####################################
-setwd("C:/Users/Nirjhar/Downloads/Mary_Ann_Analysis_2nd_March_23/mRNA_NIMBLEGEN/24HR_FV1_UI")
+setwd("/Users/nirjharbhattacharyya/Downloads/Mary_Ann_Analysis_2nd_March_23/mRNA_NIMBLEGEN/24HR_FV1_UI")
 
 #######__read___the___metadata___###############################################
-metadata <- read.table("metadata_FV_UI_24h.txt", header=TRUE, sep = "\t", row.names=1)
+metadata <- read.table("metadata_FV1_UI_24h.txt", header=TRUE, sep = "\t", row.names=1)
 
 #######__bind___the___call___files___to___a___matrix___#########################
 callmatrix <- c()
@@ -114,10 +114,10 @@ design <- model.matrix(~0+metadata$Group)
 design
 fit <- lmFit(combat_edata1, design)
 head(fit$coefficients)
-colnames(design) <- c("sample_1S","UI")
+colnames(design) <- c("sample_FV1","UI")
 fit <- lmFit(combat_edata1, design)
 head(fit$coefficients)
-contrasts <- makeContrasts(sample_1S - UI, levels=design)
+contrasts <- makeContrasts(sample_FV1 - UI, levels=design)
 fit2 <- contrasts.fit(fit, contrasts)
 fit2 <- eBayes(fit2)
 topTable(fit2)
@@ -165,7 +165,7 @@ names(keyvals)[keyvals == 'black'] <- 'Adjusted P values less than 0.05'
 names(keyvals)[keyvals == 'red'] <- 'Nonsignificant'
 names(keyvals)[keyvals == 'gold'] <- 'Upregulated'
 
-EnhancedVolcano(x, lab = row.names(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-3.5, 3.5), ylim = c(0, 12), pointSize = 3,title = ' 8HR 1S vs UI', colCustom = keyvals)
+EnhancedVolcano(x, lab = row.names(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-3.5, 3.5), ylim = c(0, 12), pointSize = 3,title = ' 24HR FV1 vs UI', colCustom = keyvals)
 
 
 ################################################################################
