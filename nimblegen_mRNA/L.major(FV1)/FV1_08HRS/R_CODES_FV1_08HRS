@@ -1,10 +1,10 @@
 rm(list=ls())
 
 #######__set___the___working___directory___#####################################
-setwd("C:/Users/Nirjhar/Downloads/Mary_Ann_Analysis_2nd_March_23/mRNA_NIMBLEGEN/8HR_FV1_UI")
+setwd("/Users/nirjharbhattacharyya/Downloads/Mary_Ann_Analysis_2nd_March_23/mRNA_NIMBLEGEN/8HR_FV1_UI/")
 
 #######__read___the___metadata___###############################################
-metadata <- read.table("metadata_FV_UI_8h.txt", header=TRUE, sep = "\t", row.names=1)
+metadata <- read.table("metadata_FV1_UI_8h.txt", header=TRUE, sep = "\t", row.names=1)
 
 #######__bind___the___call___files___to___a___matrix___#########################
 callmatrix <- c()
@@ -114,10 +114,10 @@ design <- model.matrix(~0+metadata$Group)
 design
 fit <- lmFit(combat_edata1, design)
 head(fit$coefficients)
-colnames(design) <- c("sample_1S","UI")
+colnames(design) <- c("sample_FV","UI")
 fit <- lmFit(combat_edata1, design)
 head(fit$coefficients)
-contrasts <- makeContrasts(sample_1S - UI, levels=design)
+contrasts <- makeContrasts(sample_FV - UI, levels=design)
 fit2 <- contrasts.fit(fit, contrasts)
 fit2 <- eBayes(fit2)
 topTable(fit2)
@@ -143,17 +143,17 @@ x
 ###################################################################################################
 ###################################################################################################
 
-write.csv(x, "FV1_UI_8HR_UP_AND_DOWN_RESULTS_mrna.csv", sep=",")
+write.csv(x, "FV1_UI_8h_UP_AND_DOWN_RESULTS_mrna.csv", sep=",")
 library(EnhancedVolcano)
 #EnhancedVolcano(x, lab = rownames(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-1.5, 1.5), ylim = c(0, 8), pointSize = 1,title = ' FV1 vs UI', col=c("#000000", "#F0E442", "#0072B2", "#D55E00"))
 
 #########____filer__up__and___downregultated_genes__#####
 x_up <- x[x$adj.P.Val<0.05 & x$logFC>=1.5,]
 dim(x_up)
-write.csv(x_up, "FV1_UI_8H_UPREGULATED_RESULTS_mrna.csv", sep=",")
+write.csv(x_up, "FV1_UI_8h_UPREGULATED_RESULTS_mrna.csv", sep=",")
 x_down <- x[x$adj.P.Val<0.05 & x$logFC<=-1.5,]
 dim(x_down)
-write.csv(x_down, "FV1_UI_8H_DOWNREGULATED_RESULTS_mrna.csv", sep=",")
+write.csv(x_down, "FV1_UI_8h_DOWNREGULATED_RESULTS_mrna.csv", sep=",")
 #########____some__modifications__on___volcao__plot___##########################
 keyvals <- ifelse(
   x$logFC < -1.5 & x$adj.P.Val<0.05, 'royalblue',
@@ -165,7 +165,7 @@ names(keyvals)[keyvals == 'black'] <- 'Adjusted P values less than 0.05'
 names(keyvals)[keyvals == 'red'] <- 'Nonsignificant'
 names(keyvals)[keyvals == 'gold'] <- 'Upregulated'
 
-EnhancedVolcano(x, lab = row.names(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-3.5, 3.5), ylim = c(0, 12), pointSize = 3,title = ' 8HR 1S vs UI', colCustom = keyvals)
+EnhancedVolcano(x, lab = row.names(x),  y = 'adj.P.Val', x = 'logFC', pCutoff = 0.05,  FCcutoff = 1.5, xlim = c(-3.5, 3.5), ylim = c(0, 12), pointSize = 3,title = 'FV1_UI_8H', colCustom = keyvals)
 
 
 ################################################################################
@@ -185,7 +185,7 @@ gostres_UP <- gost(query = row.names(x_up),
 
 
 onto_UP <- gostres_UP$result[,c("term_name", "p_value", "term_id", "source","precision", "intersection")]
-write.csv(onto_UP, "FV1_UI_8HR_ONTOLOGY_UPREGULATED.csv", sep=",")
+write.csv(onto_UP, "FV1_UI_8h_ONTOLOGY_UPREGULATED.csv", sep=",")
 #create separate datasets for BP,CC,MF and KEGG
 ##BP
 BP_UP<-onto_UP[onto_UP$source=="GO:BP",]
@@ -231,7 +231,7 @@ gostres_DOWN <- gost(query = row.names(x_down),
 
 
 onto_DOWN <- gostres_DOWN$result[,c("term_name", "p_value", "term_id", "source","precision", "intersection")]
-write.csv(onto_DOWN, "FV1_UI_8HR_ONTOLOGY_DOWNREGULATED.csv", sep=",")
+write.csv(onto_DOWN, "FV1_UI_8h_ONTOLOGY_DOWNREGULATED.csv", sep=",")
 #create separate datasets for BP,CC,MF and KEGG
 ##BP
 BP_DOWN<-onto_DOWN[onto_DOWN$source=="GO:BP",]
@@ -258,3 +258,4 @@ df_merged_DOWN
 
 #####Plot#########
 ggplot(data = df_merged_DOWN) + geom_point(aes(x =  precision, y = term_name, color =precision , size = -log10(p_value), shape = as.factor(source))) + labs(y = "", x = " GeneRatio") +scale_color_gradient(low = c("red"), high = c("blue"), space = "Lab")+ theme_bw() + theme(panel.background = element_rect(fill="white"), text = element_text(size = 12,face = "plain",color = "black")) + theme(legend.text = element_text(colour = "black")) + theme(axis.text = element_text(colour = "black", face = "bold")) + theme(axis.title.x = element_text(face = "bold", size = 12)) + theme(axis.title.y = element_text(face = "bold", size = 12))
+
