@@ -1,7 +1,7 @@
 rm(list=ls())
 
 #######__set___the___working___directory___#####################################
-setwd("C:/Users/Nirjhar/Downloads/Mary_Ann_Analysis_2nd_March_23/mRNA_NIMBLEGEN/1S_VS_UI")
+setwd("/Users/nirjharbhattacharyya/Downloads/Mary_Ann_Analysis_2nd_March_23/mRNA_NIMBLEGEN/1S_VS_UI/")
 
 #######__read___the___metadata___###############################################
 metadata <- read.table("metadata_1S_UI.txt", header=TRUE, sep = "\t", row.names=1)
@@ -129,7 +129,7 @@ sft = pickSoftThreshold(
   #blockSize = 30,
   powerVector = powers,
   verbose = 5
-  )
+)
 
 
 par(mfrow = c(1,2));
@@ -162,26 +162,26 @@ picked_power = 9
 temp_cor <- cor       
 cor <- WGCNA::cor         # Force it to use WGCNA cor function (fix a namespace conflict issue)
 netwk <- blockwiseModules(input_mat,                # <= input here
-
+                          
                           # == Adjacency Function ==
                           power = picked_power,                # <= power here
                           networkType = "signed",
-
+                          
                           # == Tree and Block Options ==
                           deepSplit = 2,
                           pamRespectsDendro = F,
                           # detectCutHeight = 0.75,
                           minModuleSize = 30,
                           maxBlockSize = 4000,
-
+                          
                           # == Module Adjustments ==
                           reassignThreshold = 0,
                           mergeCutHeight = 0.25,
-
+                          
                           # == TOM == Archive the run results in TOM file (saves time)
                           saveTOMs = T,
                           saveTOMFileBase = "ER",
-
+                          
                           # == Output Options
                           numericLabels = T,
                           verbose = 3)
@@ -211,6 +211,7 @@ module_df <- data.frame(
 )
 
 module_df[1:5,]
+library(readr)
 
 write_delim(module_df,
             file = "gene_modules.txt",
@@ -237,6 +238,7 @@ mME = MEs0 %>%
 mME %>% ggplot(., aes(x=treatment, y=name, fill=value)) +
   geom_tile() +
   theme_bw() +
+  geom_text(aes(label = round(value, 2)), size = 3) + 
   scale_fill_gradient2(
     low = "blue",
     high = "red",
@@ -318,6 +320,17 @@ head(edge_list)
 write_delim(edge_list,
             file = "edgelist.tsv",
             delim = "\t")
+
+
+
+
+
+
+
+
+
+
+
 
 
 
